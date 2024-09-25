@@ -29,3 +29,11 @@ footer{
     text-align: center;
     background-color: #EDDCD2;
 }
+main a{
+    color: #8c6956;
+}
+
+.wish-credit{
+    font-style: italic;
+    font-size: 0.9rem;
+}
