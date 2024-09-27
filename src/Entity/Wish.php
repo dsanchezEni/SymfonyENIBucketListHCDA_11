@@ -51,6 +51,9 @@ class Wish
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $dateUpdated = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $filename = null;
+
     public function __construct()
     {
         $this->isPublished = false;
@@ -98,12 +101,12 @@ class Wish
         return $this;
     }
 
-    public function isPublished(): ?bool
+    public function getIsPublished(): ?bool
     {
         return $this->isPublished;
     }
 
-    public function setPublished(bool $isPublished): static
+    public function setIsPublished(bool $isPublished): static
     {
         $this->isPublished = $isPublished;
 
@@ -130,6 +133,18 @@ class Wish
     public function setDateUpdated(?\DateTimeImmutable $dateUpdated): static
     {
         $this->dateUpdated = $dateUpdated;
+
+        return $this;
+    }
+
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+
+    public function setFilename(?string $filename): static
+    {
+        $this->filename = $filename;
 
         return $this;
     }
