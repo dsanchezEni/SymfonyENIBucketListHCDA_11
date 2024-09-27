@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Wish;
+use App\Form\WishType;
 use App\Repository\WishRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -31,4 +35,77 @@ class WishController extends AbstractController
             "wish"=>$wish,
         ]);
     }
+
+    #[Route('/wishes/create', name: 'wish_create',methods: ['GET','POST'])]
+    public function create(Request $request, EntityManagerInterface $em): Response
+    {
+        $wish = new Wish();
+        //On associe le formulaire à notre objet ici wish
+        $wishForm=$this->createForm(WishType::class,$wish);
+        //On récupére les données du form et on les injectent dans l'objet wish.
+        $wishForm->handleRequest($request);
+        //Si le formulaire est soumis et qu'il est valide
+        if($wishForm->isSubmitted() && $wishForm->isValid()){
+            $wish->setPublished(true);
+            //Sauvegarde bdd
+            $em->persist($wish);
+            $em->flush();
+            //Affiche le message
+            $this->addFlash("success","Idea added successfully");
+            //redirige ver la page de détail
+            return $this->redirectToRoute('wish_detail',['id'=>$wish->getId()]);
+        }
+        //affiche le formulaire
+        return $this->render('wish/create.html.twig', ['wishForm'=>$wishForm]);
+    }
+
+    #[Route('/wishes/{id}/update', name: 'wish_update',requirements:['id'=>'\d+'],methods: ['GET','POST'])]
+    public function update(int $id, WishRepository $wishRepository,Request $request, EntityManagerInterface $em): Response
+    {
+        //Récupère ce wish en fonction de l'id présent dans l'url.
+        $wish = $wishRepository->find($id);
+        //S'il n'existe pas dans la bd on déclenche une erreur de type 404.
+        if(!$wish){
+            throw $this->createNotFoundException('Wish not found');
+        }
+        //On associe le formulaire à notre objet ici wish
+        $wishForm=$this->createForm(WishType::class,$wish);
+        //On récupére les données du form et on les injectent dans l'objet wish.
+        $wishForm->handleRequest($request);
+        //Si le formulaire est soumis et qu'il est valide
+        if($wishForm->isSubmitted() && $wishForm->isValid()){
+            $wish->setDateUpdated(new \DateTimeImmutable());
+            //Sauvegarde bdd
+            $em->persist($wish);
+            $em->flush();
+            //Affiche le message
+            $this->addFlash("success","Idea updated successfully");
+            //redirige ver la page de détail
+            return $this->redirectToRoute('wish_detail',['id'=>$wish->getId()]);
+        }
+        //affiche le formulaire
+        return $this->render('wish/create.html.twig', ['wishForm'=>$wishForm]);
+    }
+
+    #[Route('/wishes/{id}/delete', name: 'wish_delete',requirements:['id'=>'\d+'],methods: ['GET'])]
+    public function delete(int $id, WishRepository $wishRepository,Request $request, EntityManagerInterface $em): Response
+    {
+        //Récupère ce wish en fonction de l'id présent dans l'url.
+        $wish = $wishRepository->find($id);
+        //S'il n'existe pas dans la bd on déclenche une erreur de type 404.
+        if(!$wish){
+            throw $this->createNotFoundException('Wish not found');
+        }
+        if($this->isCsrfTokenValid('delete'.$wish->getId(), $request->get('token'),)){
+            $em->remove($wish,true);
+            $em->flush();
+            $this->addFlash("success","This wish has been deleted successfully");
+        }else{
+            $this->addFlash("danger","This wish cat not be deleted");
+        }
+
+        //affiche le formulaire
+        return $this->redirectToRoute('wish_list');
+    }
+
 }
