@@ -25,7 +25,7 @@
                 </li>
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0">
-                {% ip app.user %}
+                {% if app.user %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout')}}" title="Se déconnecter">Se déconnecter (Bonjour {{ app.user.username }})</a>
                     </li>
