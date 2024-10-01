@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Wish;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -23,6 +25,12 @@ class WishType extends AbstractType
             ->add('description', TextareaType::class,['label'=>'Please describe it !', 'required'=>false ])
             ->add('author',TextType::class,['label'=>'Your username'])
             ->add('isPublished',CheckboxType::class,['label'=>'Published', 'required' => false ])
+            ->add('category',EntityType::class,
+                ['label'=>'Category',
+                'class'=>Category::class,
+                'choice_label'=>'name',
+                'placeholder'=>'--Choose a category--',
+                ])
             ->add('image',FileType::class,
                 [
                     'mapped'=>false,
