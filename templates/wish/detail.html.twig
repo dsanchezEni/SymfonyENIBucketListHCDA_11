@@ -16,6 +16,37 @@
             <p class="wish-credit">Created by {{ wish.user.username }} on {{ wish.dateCreated|date('Y-m-d') }}</p>
             <p class="card-text">{{ wish.description|nl2br }}</p>
         </div>
+        <p class="card-text text-decoration-underline">Comments: </p>
+        {% for comment in wish.comments %}
+            <div class="border border-1 rounded p-2">
+                <p class="wish-credit">
+                    Created by {{ comment.user.username }} on {{ comment.dateCreated | date('Y-m-d H:i:s') }}
+                    {% if app.user and (app.user == comment.user) %}
+                    <a href="{{ path('comment_update',{'id':comment.id}) }}"
+                       class="btn btn-secondary btn-sm"
+                       title="Modify comment">
+                        Modify
+                    </a>
+                    {% endif %}
+                    {% if app.user and (app.user == comment.user or is_granted("ROLE_ADMIN")) %}
+                        <a href="{{ path('comment_delete',{'id':comment.id,'token':csrf_token('delete'~comment.id)}) }}"
+                           class="btn btn-danger btn-sm"
+                           title="Delete comment">
+                            Delete
+                        </a>
+                    {% endif %}
+                </p>
+                <p class="card-text">{{ comment.content }}</p>
+                <p class="card-text">
+                    {% for i in 1..(comment.score) %}
+                        &#9733
+                    {% endfor %}
+                    {% for i in 1..(5-comment.score) %}
+                        &#9734
+                    {% endfor %}
+                </p>
+            </div>
+        {% endfor %}
         <div class="text-center">
             {% if app.user == wish.user or is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('wish_delete',{'id':wish.id,'token':csrf_token('delete'~wish.id)}) }}"
@@ -25,6 +56,8 @@
                 <a href="{{ path('wish_update',{'id':wish.id}) }}"
                    class="btn btn-secondary mt-2" title="Modify the wish">Modify</a>
             {% endif %}
+            <a href="{{ path('comment_create',{'id':wish.id}) }}"
+               class="btn btn-primary mt-2" title="Add a comment">Add a comment</a>
         </div>
     </div>
 {% endblock %}
