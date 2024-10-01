@@ -43,6 +43,7 @@ class WishController extends AbstractController
     public function create(Request $request, EntityManagerInterface $em,FileUploader $fileUploader): Response
     {
         $wish = new Wish();
+        $wish->setUser($this->getUser());
         //On associe le formulaire à notre objet ici wish
         $wishForm=$this->createForm(WishType::class,$wish);
         //On récupére les données du form et on les injectent dans l'objet wish.
@@ -76,6 +77,9 @@ class WishController extends AbstractController
         //S'il n'existe pas dans la bd on déclenche une erreur de type 404.
         if(!$wish){
             throw $this->createNotFoundException('Wish not found');
+        }
+        if(!($wish->getUser()===$this->getUser() ||  $this->isGranted('ROLE_ADMIN'))){
+            throw $this->createAccessDeniedException();
         }
         //On associe le formulaire à notre objet ici wish
         $wishForm=$this->createForm(WishType::class,$wish);

@@ -18,7 +18,7 @@ class WishRepository extends ServiceEntityRepository
 
     public function findPublishedWishesWithCategory():?array{
         $queryBuilder = $this->createQueryBuilder('w');
-        //On ajoute la jointure avec la catégorie pour éviter les multiples requêtes/
+        //On ajoute la jointure avec la catégorie pour éviter les multiples requêtes
         //On n'oublie pas de sélectionner les données !
         $queryBuilder->join('w.category', 'c')->addSelect('c');
         $queryBuilder->andWhere('w.isPublished = 1');

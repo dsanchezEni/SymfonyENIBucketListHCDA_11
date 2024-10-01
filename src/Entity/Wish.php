@@ -32,16 +32,6 @@ class Wish
         maxMessage: 'Maximum {{ limit }} characters please.')]
     private ?string $description = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message:'Please provide your username !')]
-    #[Assert\Length(
-        min: 3,
-        max: 50,
-        minMessage: 'Minimum {{ limit }} characters please.',
-        maxMessage: 'Maximum {{ limit }} characters please.')]
-    #[Assert\Regex(pattern: '/^[a-z0-9_-]+$/i',message: 'Please use only letters,numbers, underscores and dashes!')]
-    private ?string $author = null;
-
     #[ORM\Column]
     private ?bool $isPublished = null;
 
@@ -58,6 +48,10 @@ class Wish
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     private ?Category $category = null;
+
+    #[ORM\ManyToOne(inversedBy: 'wishes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -90,18 +84,6 @@ class Wish
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): static
-    {
-        $this->author = $author;
 
         return $this;
     }
@@ -162,6 +144,18 @@ class Wish
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
