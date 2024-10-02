@@ -24,6 +24,7 @@ class CommentController extends AbstractController
             throw $this->createNotFoundException('This wish do not exists !');
         }
         $comment = new Comment();
+        //Récupération de l'utilisateur connecté pour savoir qui crée le commentaire.
         $comment->setUser($this->getUser());
         $comment->setWish($wish);
         $commentForm = $this->createForm(CommentType::class, $comment);
