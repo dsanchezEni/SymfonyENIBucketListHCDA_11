@@ -41,9 +41,12 @@
                     {% for i in 1..(comment.score) %}
                         &#9733
                     {% endfor %}
-                    {% for i in 1..(5-comment.score) %}
-                        &#9734
-                    {% endfor %}
+                    {% if comment.score <5 %}
+                        {% for i in 1..(5-comment.score) %}
+                            &#9734
+                        {% endfor %}
+                    {% endif %}
+
                 </p>
             </div>
         {% endfor %}
