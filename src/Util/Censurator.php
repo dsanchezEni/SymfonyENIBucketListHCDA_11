@@ -2,7 +2,6 @@
 
 namespace App\Util;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBag;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 class Censurator

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Events | {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {{ form_start(eventForm) }}
+    <div class="d-flex flex-wrap justify-content-start align-items-end">
+        {{ form_row(eventForm.dateEvent) }}
+        {{ form_row(eventForm.city) }}
+        <button class="btn btn-primary mb-3">Search</button>
+    </div>
+    {{ form_end(eventForm) }}
+    <table>
+        {{ events|length }}
+        {% for event in events %}
+            <tr>
+                <td>{{ event.fields.daterange_fr }}</td>
+                <td>
+                    {#{% if event.fields.thumbnail is not empty %}
+                        <img src="{{ event.fields.thumbnail }}" alt="affiche événement">
+                    {% endif %}#}
+                </td>
+                <td>
+                    <p class="fw-bold">{{ event.fields.title_fr }}</p>
+                    <p>
+                        {{ event.fields.location_name }}<br>
+                        {{ event.fields.location_address }}
+                    </p>
+                    <p>{{ event.fields.description_fr }}</p>
+                    <p>
+                        {% if event.fields.canonicalurl is not empty %}
+                            <a href="{{ event.fields.canonicalurl }}">
+                                {{ event.fields.canonicalurl }}
+                            </a>
+                        {% endif %}
+                    </p>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No result</td>
+            </tr>
+        {% endfor%}
+    </table>
+{% endblock %}
+
